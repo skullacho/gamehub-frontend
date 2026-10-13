@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameHub — Sistema de Gerenciamento de Jogos</title>
+  <meta name="description" content="Mini sistema de gerenciamento de jogos eletrônicos desenvolvido para a disciplina de Desenvolvimento de Sistemas.">
+  <link rel="icon" type="image/svg+xml" href="assets/default-cover.svg">
+  <!-- Google Fonts: Inter e Orbitron para estética Gamer -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Cabeçalho Principal -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="#" class="logo" aria-label="GameHub Início">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="6" width="20" height="12" rx="3" />
+            <path d="M6 12h4m-2-2v4" />
+            <line x1="15" y1="11" x2="15.01" y2="11" stroke-width="3" />
+            <line x1="18" y1="13" x2="18.01" y2="13" stroke-width="3" />
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">GAME<span class="gradient-text">HUB</span></span>
+          <span class="logo-subtitle">SISTEMA DE GERENCIAMENTO</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <div class="api-status-badge" id="apiStatusBadge" title="Status da Conexão com o Backend">
+          <span class="status-dot"></span>
+          <span class="status-label">API Conectando...</span>
+        </div>
+        <button class="btn btn-primary btn-glow" id="btnOpenCreateModal">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          <span>Cadastrar Jogo</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner de Apresentação Hero -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span class="tag-pulse"></span>
+          <span>Catálogo Interativo de Games</span>
+        </div>
+        <h1 class="hero-title">
+          Gerencie e Explore seu <span class="gradient-text">Universo Gamer</span>
+        </h1>
+        <p class="hero-description">
+          Cadastre novos lançamentos, filtre por plataformas e gêneros, edite informações em tempo real e mantenha sua biblioteca sempre organizada com alta performance.
+        </p>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-card">
+          <span class="stat-number" id="totalGamesStat">0</span>
+          <span class="stat-label">Jogos no Catálogo</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">8</span>
+          <span class="stat-label">Gêneros Suportados</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">5</span>
+          <span class="stat-label">Plataformas</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção de Controles: Barra de Pesquisa e Filtros -->
+  <section class="controls-section">
+    <div class="container">
+      <div class="controls-card">
+        <!-- Barra de Busca -->
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="Pesquisar por nome do jogo ou desenvolvedora..."
+            autocomplete="off"
+          >
+          <button class="clear-btn" id="btnClearSearch" title="Limpar busca" style="display: none;">
+            &times;
+          </button>
+        </div>
+
+        <!-- Filtros e Ordenação -->
+        <div class="filters-row">
+          <div class="filter-group">
+            <label for="genreFilter" class="filter-label">Gênero:</label>
+            <select id="genreFilter" class="custom-select">
+              <option value="todos">Todos os Gêneros</option>
+              <option value="Ação">Ação</option>
+              <option value="Aventura">Aventura</option>
+              <option value="RPG">RPG</option>
+              <option value="Corrida">Corrida</option>
+              <option value="Estratégia">Estratégia</option>
+              <option value="Terror">Terror</option>
+              <option value="Esportes">Esportes</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="platformFilter" class="filter-label">Plataforma:</label>
+            <select id="platformFilter" class="custom-select">
+              <option value="todas">Todas as Plataformas</option>
+              <option value="PC">PC</option>
+              <option value="PlayStation">PlayStation</option>
+              <option value="Xbox">Xbox</option>
+              <option value="Nintendo Switch">Nintendo Switch</option>
+              <option value="Multiplataforma">Multiplataforma</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="sortOrder" class="filter-label">Ordenar por:</label>
+            <select id="sortOrder" class="custom-select">
+              <option value="recentes">Mais Recentes</option>
+              <option value="nome_asc">Nome (A - Z)</option>
+              <option value="nome_desc">Nome (Z - A)</option>
+              <option value="preco_asc">Menor Preço</option>
+              <option value="preco_desc">Maior Preço</option>
+              <option value="ano_desc">Ano de Lançamento</option>
+            </select>
+          </div>
+
+          <button class="btn btn-outline" id="btnResetFilters" title="Redefinir filtros para o padrão">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+            <span>Limpar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção Principal: Catálogo em Grid -->
+  <main class="main-content">
+    <div class="container">
+      <div class="catalog-header">
+        <h2 class="section-title">Catálogo de Jogos</h2>
+        <span class="catalog-counter" id="catalogCounter">Carregando jogos...</span>
+      </div>
+
+      <!-- Estado de Carregamento (Loading Spinner) -->
+      <div class="loading-state" id="loadingState">
+        <div class="spinner"></div>
+        <p class="loading-text">Buscando jogos no servidor...</p>
+      </div>
+
+      <!-- Estado Vazio (Sem jogos) -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" stroke-width="3" />
+            <line x1="15" y1="9" x2="15.01" y2="9" stroke-width="3" />
+          </svg>
+        </div>
+        <h3 class="empty-title">Nenhum jogo encontrado</h3>
+        <p class="empty-description" id="emptyDescription">
+          Não encontramos nenhum jogo correspondente aos critérios de busca ou filtros aplicados.
+        </p>
+        <button class="btn btn-primary" id="btnEmptyAction">
+          Cadastrar Novo Jogo
+        </button>
+      </div>
+
+      <!-- Grid de Cards de Jogos -->
+      <div class="games-grid" id="gamesGrid"></div>
+    </div>
+  </main>
+
+  <!-- Rodapé Obrigatório com Nomes dos Integrantes -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <div class="logo logo-footer">
+          <span class="logo-title">GAME<span class="gradient-text">HUB</span></span>
+        </div>
+        <p class="footer-tagline">
+          Mini sistema de gerenciamento de jogos desenvolvido para fins acadêmicos na disciplina de Desenvolvimento de Sistemas.
+        </p>
+      </div>
+
+      <div class="footer-team">
+        <h4 class="footer-heading">Integrantes do Projeto</h4>
+        <ul class="team-list">
+          <li class="team-member">
+            <span class="member-dot"></span>
+            <span>Arthur Nunes de Souza Possato</span>
+          </li>
+          <li class="team-member">
+            <span class="member-dot"></span>
+            <span>Enzo Marques Cardona</span>
+          </li>
+          <li class="team-member">
+            <span class="member-dot"></span>
+            <span>Pedro Sante Maria Bueno Silva</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-meta">
+        <h4 class="footer-heading">Tecnologias</h4>
+        <div class="tech-tags">
+          <span class="tech-tag">HTML5 / CSS3</span>
+          <span class="tech-tag">Vanilla JS</span>
+          <span class="tech-tag">Node.js</span>
+          <span class="tech-tag">Express</span>
+          <span class="tech-tag">MongoDB Atlas</span>
+          <span class="tech-tag">Vercel</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container footer-bottom-container">
+        <p>&copy; 2026 GameHub. Todos os direitos reservados para atividade escolar.</p>
+        <p class="academic-badge">Desenvolvimento de Sistemas</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: Cadastrar / Editar Jogo -->
+  <div class="modal-backdrop" id="gameModal" aria-hidden="true" role="dialog">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Cadastrar Novo Jogo</h3>
+        <button class="modal-close-btn" id="btnCloseGameModal" aria-label="Fechar janela">&times;</button>
+      </div>
+
+      <form id="gameForm" class="modal-form" novalidate>
+        <input type="hidden" id="gameId" name="gameId">
+
+        <div class="form-row">
+          <!-- Nome do Jogo -->
+          <div class="form-group flex-2">
+            <label for="inputNome" class="form-label">Nome do Jogo <span class="required">*</span></label>
+            <input
+              type="text"
+              id="inputNome"
+              class="form-control"
+              placeholder="Ex: The Legend of Zelda: Tears of the Kingdom"
+              required
+              maxlength="120"
+            >
+            <span class="field-error" id="errorNome"></span>
+          </div>
+
+          <!-- Desenvolvedora -->
+          <div class="form-group flex-1">
+            <label for="inputDesenvolvedora" class="form-label">Desenvolvedora <span class="required">*</span></label>
+            <input
+              type="text"
+              id="inputDesenvolvedora"
+              class="form-control"
+              placeholder="Ex: Nintendo EPD"
+              required
+              maxlength="100"
+            >
+            <span class="field-error" id="errorDesenvolvedora"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <!-- Gênero -->
+          <div class="form-group">
+            <label for="inputGenero" class="form-label">Gênero <span class="required">*</span></label>
+            <select id="inputGenero" class="form-control" required>
+              <option value="" disabled selected>Selecione um gênero...</option>
+              <option value="Ação">Ação</option>
+              <option value="Aventura">Aventura</option>
+              <option value="RPG">RPG</option>
+              <option value="Corrida">Corrida</option>
+              <option value="Estratégia">Estratégia</option>
+              <option value="Terror">Terror</option>
+              <option value="Esportes">Esportes</option>
+              <option value="Outros">Outros</option>
+            </select>
+            <span class="field-error" id="errorGenero"></span>
+          </div>
+
+          <!-- Plataforma -->
+          <div class="form-group">
+            <label for="inputPlataforma" class="form-label">Plataforma <span class="required">*</span></label>
+            <select id="inputPlataforma" class="form-control" required>
+              <option value="" disabled selected>Selecione uma plataforma...</option>
+              <option value="PC">PC</option>
+              <option value="PlayStation">PlayStation</option>
+              <option value="Xbox">Xbox</option>
+              <option value="Nintendo Switch">Nintendo Switch</option>
+              <option value="Multiplataforma">Multiplataforma</option>
+            </select>
+            <span class="field-error" id="errorPlataforma"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <!-- Preço em Reais -->
+          <div class="form-group">
+            <label for="inputPreco" class="form-label">Preço em Reais (R$)</label>
+            <input
+              type="number"
+              id="inputPreco"
+              class="form-control"
+              placeholder="0.00 (deixe 0 para Gratuito)"
+              step="0.01"
+              min="0"
+            >
+            <span class="field-error" id="errorPreco"></span>
+          </div>
+
+          <!-- Ano de Lançamento -->
+          <div class="form-group">
+            <label for="inputAno" class="form-label">Ano de Lançamento</label>
+            <input
+              type="number"
+              id="inputAno"
+              class="form-control"
+              placeholder="Ex: 2023"
+              min="1950"
+              max="2035"
+            >
+            <span class="field-error" id="errorAno"></span>
+          </div>
+        </div>
+
+        <!-- URL da Imagem -->
+        <div class="form-group">
+          <label for="inputImagem" class="form-label">URL da Imagem de Capa</label>
+          <input
+            type="url"
+            id="inputImagem"
+            class="form-control"
+            placeholder="https://exemplo.com/imagem.jpg"
+          >
+          <span class="field-help">Se vazio ou link inválido, uma capa padrão Gamer será exibida.</span>
+          <span class="field-error" id="errorImagem"></span>
+        </div>
+
+        <!-- Descrição -->
+        <div class="form-group">
+          <label for="inputDescricao" class="form-label">Descrição do Jogo</label>
+          <textarea
+            id="inputDescricao"
+            class="form-control textarea"
+            rows="3"
+            placeholder="Escreva um breve resumo da jogabilidade, história ou ambientação..."
+            maxlength="1000"
+          ></textarea>
+          <span class="field-error" id="errorDescricao"></span>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelGameModal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitGame">
+            <span class="btn-text" id="submitBtnText">Salvar Jogo</span>
+            <span class="btn-spinner" id="submitBtnSpinner" style="display: none;"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Detalhes do Jogo -->
+  <div class="modal-backdrop" id="detailsModal" aria-hidden="true" role="dialog">
+    <div class="modal-box modal-box-large">
+      <div class="modal-header">
+        <h3 class="modal-title">Detalhes do Jogo</h3>
+        <button class="modal-close-btn" id="btnCloseDetailsModal" aria-label="Fechar detalhes">&times;</button>
+      </div>
+
+      <div class="details-content" id="detailsBody">
+        <!-- Conteúdo injetado dinamicamente via script.js -->
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="btnEditFromDetails">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+          <span>Editar Informações</span>
+        </button>
+        <button type="button" class="btn btn-secondary" id="btnCloseDetails">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Confirmação de Exclusão -->
+  <div class="modal-backdrop" id="deleteModal" aria-hidden="true" role="dialog">
+    <div class="modal-box modal-box-small">
+      <div class="delete-icon-wrapper">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+          <line x1="10" y1="11" x2="10" y2="17" />
+          <line x1="14" y1="11" x2="14" y2="17" />
+        </svg>
+      </div>
+      <h3 class="delete-modal-title">Confirmar Exclusão</h3>
+      <p class="delete-modal-text">
+        Tem certeza que deseja remover o jogo <strong id="deleteGameName"></strong> do catálogo? Essa ação não pode ser desfeita.
+      </p>
+
+      <div class="modal-footer justify-center">
+        <button type="button" class="btn btn-secondary" id="btnCancelDelete">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmDelete">
+          <span class="btn-text">Excluir Jogo</span>
+          <span class="btn-spinner" id="deleteBtnSpinner" style="display: none;"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container de Mensagens Toast (Notificações) -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Script Principal com Fetch API e Vanilla JS -->
+  <script src="script.js"></script>
+</body>
+</html>
