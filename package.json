@@ -1,0 +1,18 @@
+{
+  "name": "gamehub-frontend",
+  "version": "1.0.0",
+  "description": "Interface web moderna do GameHub - Sistema de Gerenciamento de Jogos",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/frontend.test.js"
+  },
+  "keywords": [
+    "gamehub",
+    "frontend",
+    "games",
+    "vanillajs"
+  ],
+  "author": "Arthur Possato, Enzo Cardona, Pedro Sante",
+  "license": "ISC"
+}
